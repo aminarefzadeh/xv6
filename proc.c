@@ -9,10 +9,7 @@
 #include <stdio.h>
 
 
-struct {
-  struct spinlock lock;
-  struct proc proc[NPROC];
-} ptable;
+struct PTABLE ptable;
 
 static struct proc *initproc;
 

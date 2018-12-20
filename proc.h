@@ -1,4 +1,5 @@
 // Per-CPU state
+#include "spinlock.h"
 
 struct cpu {
   uchar apicid;                // Local APIC ID
@@ -22,7 +23,7 @@ extern int ncpu;
 // x86 convention is that the caller has saved them.
 // Contexts are stored at the bottom of the stack they
 // describe; the stack pointer is the address of the context.
-// The layout of the context matches the layout of the stack in swtch.S
+// Thestruct spinlock ; layout of the context matches the layout of the stack in swtch.S
 // at the "Switch stacks" comment. Switch doesn't save eip explicitly,
 // but it is on the stack and allocproc() manipulates it.
 struct context {
@@ -58,6 +59,10 @@ struct proc {
   int ticket_num;
 };
 
+struct PTABLE {
+  struct spinlock lock;
+  struct proc proc[NPROC];
+};
 // Process memory is laid out contiguously, low addresses first:
 //   text
 //   original data and bss

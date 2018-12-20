@@ -23,6 +23,10 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+int addToTicket(int);
+int addToFCFS(void);
+int addToPriority(int);
+int logProcs(void);
 
 // ulib.c
 int stat(const char*, struct stat*);
