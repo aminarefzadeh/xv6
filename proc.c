@@ -325,10 +325,42 @@ wait(void)
 //  - swtch to start running that process
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
+struct proc*
+PRIORITY_scheduler(){
+    struct proc *p;
+    struct proc* selected_process = NULL;
+    for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
+      if(p->queue != PRIORITY)
+        continue;
+      else if(p->state != RUNNABLE)
+        continue;
+      else if(selected_process==NULL || p->PRIORITY < selected_process->PRIORITY)
+        selected_process = p;
+    }
+    return selected_process;
+}
+
+struct proc*
+FCFS_scheduler(){
+  struct proc *p;
+  struct proc* selected_process = NULL;
+  for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
+    if(p-> queue != FCFS)
+      continue;
+    else if(p->state != RUNNABLE)
+      continue;
+    else if(selected_process==NULL || p->pid < selected_process->pid)
+      selected_process = p;
+
+  }
+  return selected_process;
+}
+
+
 void
 scheduler(void)
 {
-  struct proc *p;
+  struct proc* selected_process;
   struct cpu *c = mycpu();
   c->proc = 0;
 
@@ -338,24 +370,18 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
-
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
-
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
+    selected_process = FCFS_scheduler();
+    if(selected_process == NULL)
+      selected_process = PRIORITY_scheduler();
+    if(selected_process == NULL){
+      printf("no process selected\n");
+      continue;
     }
+    switchuvm(selected_process);
+    swtch(&(c->scheduler),selected_process->context);
+    switchkvm();
+    c->proc = 0;
     release(&ptable.lock);
 
   }
@@ -373,7 +399,8 @@ sched(void)
 {
   int intena;
   struct proc *p = myproc();
-
+  if((p->queue == FCFS || p->queue == PRIORITY)&&(p->state==RUNNABLE))
+    return;
   if(!holding(&ptable.lock))
     panic("sched ptable.lock");
   if(mycpu()->ncli != 1)
