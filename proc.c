@@ -8,6 +8,7 @@
 #include "spinlock.h"
 #include <sys/time.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 struct {
   struct spinlock lock;
@@ -361,6 +362,35 @@ FCFS_scheduler(){
   return selected_process;
 }
 
+struct proc*
+TICKET_scheduler(){
+  int ticket_range = 0;
+  struct proc *p;
+  struct proc* selected_process = NULL;
+  for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
+    if(p-> queue != TICKET)
+      continue;
+    else if(p->state != RUNNABLE)
+      continue;
+    else ticket_range+= p->ticket_num;
+  }
+  int random_ticket = (rand() % ticket_num) + 1;
+  int ticket_seen = 0 ;
+  for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
+    if(p-> queue != TICKET)
+      continue;
+    else if(p->state != RUNNABLE)
+      continue;
+    else if(ticket_seen < random_ticket && ticket_seen + p->ticket_num > random_ticket){
+      selected_process = p;
+      break;
+    }
+    else{
+      ticket_seen+=p->ticket_num;
+    }
+  }
+  return selected_process;
+}
 
 void
 scheduler(void)
@@ -375,20 +405,19 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-
-    selected_process = FCFS_scheduler();
+    selected_process = TICKET_scheduler();
+    if(selected_process == NULL)
+      selected_process = FCFS_scheduler();
     if(selected_process == NULL)
       selected_process = PRIORITY_scheduler();
-    // if(selected_process == NULL){
-    //   panic("no process selected");
-    //   continue;
-    // }
+    if(selected_process != NULL){
     c->proc = selected_process;
     switchuvm(selected_process);
     selected_process->state = RUNNING;
     swtch(&(c->scheduler),selected_process->context);
     switchkvm();
     c->proc = 0;
+    }
     release(&ptable.lock);
 
   }
