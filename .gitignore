@@ -1,0 +1,11 @@
+*.o
+_*
+*.d
+bootblock
+bootblock.asm
+entryother
+entryother.asm
+initcode
+initcode.asm
+initcode.out
+vectors.S
