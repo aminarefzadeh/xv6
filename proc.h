@@ -1,5 +1,4 @@
 // Per-CPU state
-#include <time.h>
 
 struct cpu {
   uchar apicid;                // Local APIC ID
@@ -54,7 +53,7 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
   enum procqueue queue ;
-  time_t started_time ;
+  uint started_time ;
   int priority;
   int ticket_num;
 };

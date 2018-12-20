@@ -6,7 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-#include <time.h>
+#include <sys/time.h>
 
 struct {
   struct spinlock lock;
@@ -18,6 +18,7 @@ static struct proc *initproc;
 int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
+extern uint ticks;
 
 static void wakeup1(void *chan);
 
@@ -89,7 +90,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-  p->started_time = time(0);
+  p->started_time = ticks;
 
   release(&ptable.lock);
 
@@ -328,13 +329,13 @@ wait(void)
 struct proc*
 PRIORITY_scheduler(){
     struct proc *p;
-    struct proc* selected_process = NULL;
+    struct proc* selected_process = 0;
     for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
       if(p->queue != PRIORITY)
         continue;
       else if(p->state != RUNNABLE)
         continue;
-      else if(selected_process==NULL || p->priority < selected_process->priority)
+      else if(selected_process==0 || p->priority < selected_process->priority)
         selected_process = p;
     }
     return selected_process;
@@ -343,13 +344,13 @@ PRIORITY_scheduler(){
 struct proc*
 FCFS_scheduler(){
   struct proc *p;
-  struct proc* selected_process = NULL;
+  struct proc* selected_process = 0;
   for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
     if(p-> queue != FCFS)
       continue;
     else if(p->state != RUNNABLE)
       continue;
-    else if(selected_process==NULL || p->pid < selected_process->pid)
+    else if(selected_process==0 || p->pid < selected_process->pid)
       selected_process = p;
 
   }
@@ -372,9 +373,9 @@ scheduler(void)
     acquire(&ptable.lock);
 
     selected_process = FCFS_scheduler();
-    if(selected_process == NULL)
+    if(selected_process == 0)
       selected_process = PRIORITY_scheduler();
-    if(selected_process == NULL){
+    if(selected_process == 0){
       panic("no process selected");
       continue;
     }

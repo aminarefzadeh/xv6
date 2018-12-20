@@ -9,3 +9,7 @@ initcode
 initcode.asm
 initcode.out
 vectors.S
+kernel
+kernel.asm
+kernel.sym
+xv6.img
