@@ -376,8 +376,8 @@ scheduler(void)
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
 
-    selected_process = FCFS_scheduler();
-    if(selected_process == NULL)
+    // selected_process = FCFS_scheduler();
+    // if(selected_process == NULL)
       selected_process = PRIORITY_scheduler();
     if(selected_process == NULL){
       panic("no process selected");
