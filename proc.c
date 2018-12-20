@@ -331,11 +331,11 @@ PRIORITY_scheduler(){
     struct proc *p;
     struct proc* selected_process = 0;
     for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
-      panic("im here");
       if(p->queue != PRIORITY)
         continue;
       else if(p->state != RUNNABLE)
         continue;
+      panic("im here");
       else if(selected_process==0 || p->priority < selected_process->priority){
 
         selected_process = p;
