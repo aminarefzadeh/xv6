@@ -6,9 +6,8 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-#include <sys/time.h>
 #include <stdio.h>
-#include <stdlib.h>
+
 
 struct {
   struct spinlock lock;
@@ -23,6 +22,16 @@ extern void trapret(void);
 extern uint ticks;
 
 static void wakeup1(void *chan);
+
+unsigned short lfsr = 0xACE1u;
+unsigned bit;
+
+unsigned rand()
+{
+  bit  = ((lfsr >> 0) ^ (lfsr >> 2) ^ (lfsr >> 3) ^ (lfsr >> 5) ) & 1;
+  return lfsr =  (lfsr >> 1) | (bit << 15);
+}
+
 
 void
 pinit(void)
@@ -338,8 +347,6 @@ PRIORITY_scheduler(){
       else if(p->state != RUNNABLE)
         continue;
       else if(selected_process== NULL || p->priority < selected_process->priority){
-        panic("im here");
-
         selected_process = p;
       }
     }
@@ -374,7 +381,7 @@ TICKET_scheduler(){
       continue;
     else ticket_range+= p->ticket_num;
   }
-  int random_ticket = (rand() % ticket_num) + 1;
+  int random_ticket = (rand() % p->ticket_num) + 1;
   int ticket_seen = 0 ;
   for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
     if(p-> queue != TICKET)
