@@ -330,7 +330,7 @@ wait(void)
 struct proc*
 PRIORITY_scheduler(){
     struct proc *p;
-    struct proc* selected_process = 0;
+    struct proc* selected_process = NULL;
     for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
       if(p->queue != PRIORITY)
         continue;
@@ -348,13 +348,13 @@ PRIORITY_scheduler(){
 struct proc*
 FCFS_scheduler(){
   struct proc *p;
-  struct proc* selected_process = 0;
+  struct proc* selected_process = NULL;
   for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
     if(p-> queue != FCFS)
       continue;
     else if(p->state != RUNNABLE)
       continue;
-    else if(selected_process==0 || p->pid < selected_process->pid)
+    else if(selected_process==NULL || p->pid < selected_process->pid)
       selected_process = p;
 
   }
@@ -377,9 +377,9 @@ scheduler(void)
     acquire(&ptable.lock);
 
     selected_process = FCFS_scheduler();
-    if(selected_process == 0)
+    if(selected_process == NULL)
       selected_process = PRIORITY_scheduler();
-    if(selected_process == 0){
+    if(selected_process == NULL){
       panic("no process selected");
       continue;
     }
@@ -404,8 +404,6 @@ sched(void)
 {
   int intena;
   struct proc *p = myproc();
-  if((p->queue == FCFS || p->queue == PRIORITY)&&(p->state==RUNNABLE))
-    return;
   if(!holding(&ptable.lock))
     panic("sched ptable.lock");
   if(mycpu()->ncli != 1)
