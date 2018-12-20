@@ -333,12 +333,12 @@ PRIORITY_scheduler(){
     for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
       if(p->queue != PRIORITY)
         continue;
-      else if(p->state != RUNNABLE){
-        panic("process not runnable");
+      else if(p->state != RUNNABLE)
         continue;
-      }
-      else if(selected_process==0 || p->priority < selected_process->priority)
+      else if(selected_process==0 || p->priority < selected_process->priority){
+        panic("im here");
         selected_process = p;
+      }
     }
     return selected_process;
 }
