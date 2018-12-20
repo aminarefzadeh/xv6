@@ -365,7 +365,7 @@ FCFS_scheduler(){
 void
 scheduler(void)
 {
-  struct proc* selected_process;
+  struct proc* selected_process = NULL;
   struct cpu *c = mycpu();
   c->proc = 0;
 
@@ -383,7 +383,9 @@ scheduler(void)
     //   panic("no process selected");
     //   continue;
     // }
+    c->proc = selected_process;
     switchuvm(selected_process);
+    selected_process->state = RUNNING;
     swtch(&(c->scheduler),selected_process->context);
     switchkvm();
     c->proc = 0;
