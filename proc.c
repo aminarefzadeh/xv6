@@ -334,7 +334,7 @@ PRIORITY_scheduler(){
         continue;
       else if(p->state != RUNNABLE)
         continue;
-      else if(selected_process==NULL || p->PRIORITY < selected_process->PRIORITY)
+      else if(selected_process==NULL || p->priority < selected_process->priority)
         selected_process = p;
     }
     return selected_process;
@@ -375,7 +375,7 @@ scheduler(void)
     if(selected_process == NULL)
       selected_process = PRIORITY_scheduler();
     if(selected_process == NULL){
-      printf("no process selected\n");
+      panic("no process selected");
       continue;
     }
     switchuvm(selected_process);
