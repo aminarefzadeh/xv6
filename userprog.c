@@ -7,7 +7,7 @@ int main(int argc,char *argv[])
 {
   int pid;
   //ticketlockinit();
-  rwinit();
+  //rwinit();
   pid = fork();
   for(int i=1;i<NCHILD;i++)
     if (pid>0)
@@ -20,7 +20,7 @@ int main(int argc,char *argv[])
   {
     printf(1,"child adding to shared counter\n");
     //ticketlocktest();
-    rwtest(28);
+    //rwtest(28);
     exit();
   }
   else{
