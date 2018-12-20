@@ -130,14 +130,15 @@ sys_addToPriority(void){
 
 int
 sys_logProcs(void){
-  cprintf("name\t\tpid\t\tstate\t\tpriority\t\tticketNumbet\t\tcreateTime\n");
-  cprintf("---------------------------------------------------------------------");
+  cprintf("name    pid    state    priority    ticketNumbet    createTime\n");
+  cprintf("--------------------------------------------------------------\n");
   struct proc* p;
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)
       continue;
     else{
-      cprintf("%c\t\t%d\t\t",p->name,p->pid);
+      cprintf(p->name);
+      cprintf("    %d    ",p->pid);
       switch(p->state){
         case EMBRYO:
           cprintf("EMBRYO");
@@ -157,19 +158,19 @@ sys_logProcs(void){
         default:
           break;
       }
-      cprintf("\t\t");
+      cprintf("    ");
       if(p->queue == PRIORITY){
-        cprintf("%d\t\t",p->priority);
+        cprintf("%d    ",p->priority);
       }
       else{
-        cprintf("-\t\t");
+        cprintf("-    ");
       }
 
       if(p->queue == TICKET){
-        cprintf("%d\t\t",p->ticket_num);
+        cprintf("%d    ",p->ticket_num);
       }
       else{
-        cprintf("-\t\t");
+        cprintf("-    ");
       }
 
       cprintf("%d\n",p->started_time);

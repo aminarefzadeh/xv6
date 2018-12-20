@@ -125,7 +125,7 @@ found:
 
 
   p->queue = PRIORITY;
-  p->priority = 10;
+  p->priority = 1;
 
   return p;
 }

@@ -6,8 +6,6 @@
 int main(int argc,char *argv[])
 {
   int pid;
-  //ticketlockinit();
-  //rwinit();
   pid = fork();
   for(int i=1;i<NCHILD;i++)
     if (pid>0)
@@ -18,15 +16,14 @@ int main(int argc,char *argv[])
   }
   else if (pid == 0)
   {
-    printf(1,"child adding to shared counter\n");
-    //ticketlocktest();
-    //rwtest(28);
+    //printf(1,"child adding to shared counter\n");
     exit();
   }
   else{
+    logProcs();
     for (int i=0; i<NCHILD ; i++)
       wait();
-    printf(1,"user program finished\n");
+    //printf(1,"user program finished\n");
     exit();
   }
 }
