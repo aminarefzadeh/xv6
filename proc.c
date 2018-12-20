@@ -335,8 +335,8 @@ PRIORITY_scheduler(){
         continue;
       else if(p->state != RUNNABLE)
         continue;
-      panic("im here");
-      else if(selected_process==0 || p->priority < selected_process->priority){
+      else if(selected_process== NULL || p->priority < selected_process->priority){
+        panic("im here");
 
         selected_process = p;
       }
