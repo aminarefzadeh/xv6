@@ -334,7 +334,7 @@ PRIORITY_scheduler(){
       if(p->queue != PRIORITY)
         continue;
       else if(p->state != RUNNABLE){
-        panic("process not runnable")
+        panic("process not runnable");
         continue;
       }
       else if(selected_process==0 || p->priority < selected_process->priority)
