@@ -128,52 +128,81 @@ sys_addToPriority(void){
   return 0;
 }
 
+void print_string_in_space(char* a, int space){
+  int len;
+  len = strlen(a);
+  cprintf(a);
+  int k = len;
+  while(k<space){
+    cprintf(" ");
+    k++;
+  }
+}
+
+void print_int_in_space(int a , int space){
+  int len = 1;
+  int k = a;
+  while(k/10){
+    k /= 10;
+    len++;
+  }
+  cprintf("%d",a);
+  k = len;
+  while(k<space){
+    cprintf(" ");
+    k++;
+  }
+}
+
+
 int
 sys_logProcs(void){
-  cprintf("name    pid    state    priority    ticketNumbet    createTime\n");
-  cprintf("--------------------------------------------------------------\n");
+  cprintf("name       pid      state     priority    ticketNumbet    createTime  \n");
+  cprintf("------------------------------------------------------------------\n");
   struct proc* p;
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == UNUSED)
       continue;
     else{
-      cprintf(p->name);
-      cprintf("    %d    ",p->pid);
+      print_string_in_space(p->name,12);
+      //cprintf(p->name);
+      print_int_in_space(p->pid,8);
+      //cprintf("    %d    ",p->pid);
       switch(p->state){
         case EMBRYO:
-          cprintf("EMBRYO");
+          print_string_in_space("EMBRYO",14);
           break;
         case SLEEPING:
-          cprintf("SLEEPING");
+          print_string_in_space("SLEEPING",14);
           break;
         case RUNNABLE:
-          cprintf("RUNNABLE");
+          print_string_in_space("RUNNABLE",14);
           break;
         case RUNNING:
-          cprintf("RUNNING");
+          print_string_in_space("RUNNING",14);
           break;
         case ZOMBIE:
-          cprintf("ZOMBIE");
+          print_string_in_space("ZOMBIE",14);
           break;
         default:
           break;
       }
-      cprintf("    ");
+      //cprintf("    ");
       if(p->queue == PRIORITY){
-        cprintf("%d    ",p->priority);
+        print_int_in_space(p->priority,12);
       }
       else{
-        cprintf("-    ");
+        print_string_in_space("-",12);
       }
 
       if(p->queue == TICKET){
-        cprintf("%d    ",p->ticket_num);
+        print_int_in_space(p->ticket_num,16);
       }
       else{
-        cprintf("-    ");
+        print_string_in_space("-",16);
       }
-
-      cprintf("%d\n",p->started_time);
+      print_int_in_space(p->started_time,12);
+      cprintf("\n");
     }
   }
   return 0;
