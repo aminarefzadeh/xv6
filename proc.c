@@ -378,14 +378,16 @@ TICKET_scheduler(){
       continue;
     else ticket_range+= p->ticket_num;
   }
-  int random_ticket = (rand() % p->ticket_num) + 1;
+  int random_ticket = -1;
+  if(ticket_range)
+    random_ticket = (rand() % ticket_range);
   int ticket_seen = 0 ;
   for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
     if(p-> queue != TICKET)
       continue;
     else if(p->state != RUNNABLE)
       continue;
-    else if(ticket_seen < random_ticket && ticket_seen + p->ticket_num > random_ticket){
+    else if(ticket_seen <= random_ticket && ticket_seen + p->ticket_num > random_ticket){
       selected_process = p;
       break;
     }
