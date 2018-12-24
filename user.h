@@ -23,9 +23,9 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-int addToTicket(int);
-int addToFCFS(void);
-int addToPriority(int);
+int addToTicket(int, int);
+int addToFCFS(int);
+int addToPriority(int, int);
 int logProcs(void);
 
 // ulib.c

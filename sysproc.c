@@ -96,21 +96,39 @@ sys_uptime(void)
 int
 sys_addToTicket(void){
   int n;
-  if(argint(0, &n) < 0)
+  int pid;
+  if(argint(0, &pid) < 0)
     return -1;
-  struct proc *curproc = myproc();
+  if(argint(1, &n) < 0)
+    return -1;
+  //struct proc *curproc = myproc();
   acquire(&ptable.lock);
-  curproc->queue = TICKET;
-  curproc->ticket_num = n;
+  struct proc *p;
+  for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
+    if(p->pid == pid ){
+      p->queue = TICKET;
+      p->ticket_num = n;
+      break;
+    }
+  }
   release(&ptable.lock);
   return 0;
 }
 
 int
 sys_addToFCFS(void){
-  struct proc *curproc = myproc();
+  int pid;
+  if(argint(0, &pid) < 0)
+    return -1;
+  //struct proc *curproc = myproc();
   acquire(&ptable.lock);
-  curproc->queue = FCFS;
+  struct proc *p;
+  for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
+    if(p->pid == pid ){
+      p->queue = FCFS;
+      break;
+    }
+  }
   release(&ptable.lock);
   return 0;
 }
@@ -118,12 +136,21 @@ sys_addToFCFS(void){
 int
 sys_addToPriority(void){
   int n;
-  if(argint(0, &n) < 0)
+  int pid;
+  if(argint(0, &pid) < 0)
     return -1;
-  struct proc *curproc = myproc();
+  if(argint(1, &n) < 0)
+    return -1;
+  //struct proc *curproc = myproc();
   acquire(&ptable.lock);
-  curproc->queue = PRIORITY;
-  curproc->priority = n;
+  struct proc *p;
+  for(p = ptable.proc;p < &ptable.proc[NPROC];p++){
+    if(p->pid == pid ){
+      p->queue = PRIORITY;
+      p->priority = n;
+      break;
+    }
+  }
   release(&ptable.lock);
   return 0;
 }

@@ -1,7 +1,7 @@
 #include "types.h"
 #include "user.h"
 
-#define NCHILD 10
+#define NCHILD 3
 
 int main(int argc,char *argv[])
 {
@@ -16,14 +16,21 @@ int main(int argc,char *argv[])
   }
   else if (pid == 0)
   {
-    //printf(1,"child adding to shared counter\n");
+    // child body
+    double i = 0;
+    printf(1,"child pid : %d\n",getpid());
+    for (i=0;i<10000000;i+=0.01);
+    printf(1,"child pid : %d done\n",getpid());
     exit();
   }
   else{
-    logProcs();
-    for (int i=0; i<NCHILD ; i++)
-      wait();
-    //printf(1,"user program finished\n");
+    //parent body
+    //double i = 0;
+    printf(1,"parent pid : %d\n",getpid());
+    // for (i=0;i<1000000;i+=0.01);
+    // printf(1,"parent pid : %d done\n",getpid());
+    // for (int i=0; i<NCHILD ; i++)
+    //   wait();
     exit();
   }
 }
